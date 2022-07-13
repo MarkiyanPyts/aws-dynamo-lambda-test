@@ -13,10 +13,8 @@ const dynamo = new AWS.DynamoDB({apiVersion: '2012-08-10'});
  * DynamoDB API as a JSON body.
  */
 exports.handler = async (event, context) => {
-    //console.log('Received event:', JSON.stringify(event, null, 2));
-
     let body;
-    const parsedBody = JSON.parse(event.body)
+    const parsedBody = JSON.parse(event?.body)
     let statusCode = '200';
     const headers = {
         'Content-Type': 'application/json',
@@ -25,12 +23,12 @@ exports.handler = async (event, context) => {
     try {
         switch (event.httpMethod) {
             case 'POST':
-                const collectionId = parsedBody.collectionId;
-                const componentId = parsedBody.componentId;
-                const hoursInstalled = parsedBody.hoursInstalled;
-                const contributorsGithubUserNames = parsedBody.contributorsGithubUserNames;
-                const jiraProjectId = parsedBody.jiraProjectId;
-                const installationType = parsedBody.installationType;
+                const collectionId = parsedBody?.collectionId;
+                const componentId = parsedBody?.componentId;
+                const hoursInstalled = parsedBody?.hoursInstalled;
+                const contributorsGithubUserNames = parsedBody?.contributorsGithubUserNames;
+                const jiraProjectId = parsedBody?.jiraProjectId;
+                const installationType = parsedBody?.installationType;
                 
                 const timestamp = + new Date();
                 const ttlTime = (timestamp / 1000 + 60 * 60 * 24 * 7).toString(); // 7 days
