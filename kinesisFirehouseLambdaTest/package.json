@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-firehose": "^3.137.0"
+    "@aws-sdk/client-firehose": "^3.137.0",
+    "jsonschema": "^1.4.1"
   }
 }
