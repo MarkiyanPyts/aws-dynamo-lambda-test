@@ -1,4 +1,6 @@
 const { FirehoseClient, PutRecordCommand } = require("@aws-sdk/client-firehose");
+const validateInput = require("./validateInput")
+const componentsVaultValidatorSchema = require("./validatorSchemas/componentsVault")
 
 exports.handler = async (event, context) => {
     let body;
@@ -11,27 +13,39 @@ exports.handler = async (event, context) => {
     try {
         switch (event.httpMethod) {
             case 'POST':
-                const collectionId = parsedBody?.collectionId;
-                const componentId = parsedBody?.componentId;
-                const hoursInstalled = parsedBody?.hoursInstalled;
-                const contributorsGithubUserNames = parsedBody?.contributorsGithubUserNames;
-                const jiraProjectId = parsedBody?.jiraProjectId;
-                const installationType = parsedBody?.installationType;
-                const installerEmail = parsedBody?.installerEmail;
+                const rawData = {
+                    collectionId: parsedBody?.collectionId,
+                    componentId: parsedBody?.componentId,
+                    hoursInstalled: parsedBody?.hoursInstalled,
+                    contributors: parsedBody?.contributors,
+                    jiraProjectId: parsedBody?.jiraProjectId,
+                    installationType: parsedBody?.installationType,
+                    installerEmail: parsedBody?.installerEmail
+                };
+
+                const validationResult = validateInput(rawData, componentsVaultValidatorSchema)
+
+                if (validationResult.hasErrors) {
+                    headers['X-Error-Message'] = validationResult.error.details[0].message;
+                    body = {
+                        error: validationResult.error
+                    };
+                    break;
+                }
                 
                 const timestamp = + new Date();
-                const installationId = `${componentId.toString()}-${timestamp.toString()}`;
-                
-                var writeData = {
+                const installationId = `${rawData?.componentId.toString()}-${timestamp.toString()}`;
+
+                const writeData = {
                     "installationId": installationId,
-                    "componentId" : componentId.toString(),
+                    "componentId" : rawData?.componentId.toString(),
                     "installationTimestamp" : timestamp,
-                    "collectionId": collectionId.toString(),
-                    "hoursInstalled": hoursInstalled,
-                    "contributorsGithubUserNames": contributorsGithubUserNames.toString(),
-                    "jiraProjectId": jiraProjectId.toString(),
-                    "installationType": installationType.toString(),
-                    "installerEmail": installerEmail.toString(),
+                    "collectionId": rawData?.collectionId.toString(),
+                    "hoursInstalled": rawData?.hoursInstalled,
+                    "contributors": rawData?.contributors.toString(),
+                    "jiraProjectId": rawData?.jiraProjectId.toString(),
+                    "installationType": rawData?.installationType.toString(),
+                    "installerEmail": rawData?.installerEmail.toString(),
                 };
                 
                 try {
@@ -56,7 +70,7 @@ exports.handler = async (event, context) => {
                         installationTimestamp: timestamp,
                         collectionId: collectionId,
                         hoursInstalled: hoursInstalled,
-                        contributorsGithubUserNames: contributorsGithubUserNames,
+                        contributors: contributors,
                         jiraProjectId: jiraProjectId,
                         installerEmail: installerEmail,
                         installationType: installationType

@@ -52,6 +52,7 @@ const schema = {
         installerEmail: {
             type: "string",
             format: "email",
+            maxLength: 50
         },
     },
     required: ["componentId", "collectionId", "hoursInstalled", "contributors", "installationType"]
