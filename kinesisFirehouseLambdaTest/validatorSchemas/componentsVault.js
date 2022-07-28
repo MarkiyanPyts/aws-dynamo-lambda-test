@@ -41,7 +41,6 @@ const schema = {
         },
         jiraProjectId: {
             type: "string",
-            minLength: 1,
             maxLength: 50
         },
         installationType: {

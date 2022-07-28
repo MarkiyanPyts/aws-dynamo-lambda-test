@@ -26,10 +26,9 @@ exports.handler = async (event, context) => {
                 const validationResult = validateInput(rawData, componentsVaultValidatorSchema)
 
                 if (validationResult.hasErrors) {
-                    headers['X-Error-Message'] = validationResult.error.details[0].message;
-                    body = {
-                        error: validationResult.error
-                    };
+                    body = JSON.stringify({
+                        message: validationResult.error
+                    })
                     break;
                 }
                 
@@ -64,16 +63,15 @@ exports.handler = async (event, context) => {
                     statusCode = '200';
                     
                     body = JSON.stringify({
-                        res: response,
-                        installationId: `${componentId}-${timestamp}`,
-                        componentId: componentId,
+                        installationId: `${rawData?.componentId}-${timestamp}`,
+                        componentId: rawData?.componentId,
                         installationTimestamp: timestamp,
-                        collectionId: collectionId,
-                        hoursInstalled: hoursInstalled,
-                        contributors: contributors,
-                        jiraProjectId: jiraProjectId,
-                        installerEmail: installerEmail,
-                        installationType: installationType
+                        collectionId: rawData?.collectionId,
+                        hoursInstalled: rawData?.hoursInstalled,
+                        contributors: rawData?.contributors,
+                        jiraProjectId: rawData?.jiraProjectId,
+                        installerEmail: rawData?.installerEmail,
+                        installationType: rawData?.installationType
                     })
                 } catch (err) {
                     body = JSON.stringify({error: err});
