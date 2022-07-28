@@ -37,7 +37,7 @@ exports.handler = async (event, context) => {
                 try {
                     const client = new FirehoseClient({ region: "eu-central-1" });
                     const command = new PutRecordCommand({
-                        DeliveryStreamName: "components-vault-data-delivery-stream",
+                        DeliveryStreamName: "components-vault-data-lake-delivery-stream",
                         Record: {
                             Data: Buffer.from(
                                 JSON.stringify(writeData)
