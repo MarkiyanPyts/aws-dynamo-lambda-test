@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
                     "installationTimestamp" : timestamp,
                     "collectionId": rawData?.collectionId.toString(),
                     "hoursInstalled": rawData?.hoursInstalled,
-                    "contributors": rawData?.contributors.toString(),
+                    "contributors": JSON.stringify(rawData?.contributors),
                     "jiraProjectId": rawData?.jiraProjectId.toString(),
                     "installationType": rawData?.installationType.toString(),
                     "installerEmail": rawData?.installerEmail.toString(),
